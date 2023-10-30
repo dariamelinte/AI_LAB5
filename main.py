@@ -9,6 +9,18 @@ logging.basicConfig(filename="logs.log",
                     datefmt='%H:%M:%S',
                     level=logging.DEBUG)
 
+def bkt_with_fc_mrv(sudoku: Sudoku):
+    if sudoku.is_complete():
+        return True
+    
+    print(sudoku.domain_matrix)
+
+    i, j = sudoku.get_next_unassigned_variable()
+
+    for value in sudoku.domain_matrix[i][j]:
+        print(value)
+
+
 def main():
     examples = ["1"]
 
@@ -17,18 +29,32 @@ def main():
 
         with open(f"in/{example}.csv",'r') as file:
             reader = csv.reader(file, delimiter=",")
-            matrix = []
-            for row in reader:
-                matrix.append(row)
+            domain_matrix = []
+            for reader_row in reader:
+                row = []
+                for value in reader_row:
+                    value = int(value)
+                    if value > 0:
+                        row.append(set([value]))
+                    elif value % 2 == 0: #it is -2 => empty grey cell 
+                        row.append(set([2, 4, 6, 8]))
+                    else: # it is -1 => normal empty cell
+                        row.append(set([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+            
+
+                domain_matrix.append(row)
             
             # Instantiate a puzzle to solve
-            sudoku.matrix = matrix
+            sudoku.domain_matrix = domain_matrix
+            sudoku.clean_domains()
+            print(sudoku.domain_matrix)
+
+        # bkt_with_fc_mrv(sudoku=sudoku)
         
         with open(f"out/{example}.csv",'w') as sud_out:
             writer = csv.writer(sud_out,lineterminator="\n")
 
-            for row in sudoku.matrix:
-                print(row)
+            for row in sudoku.domain_matrix:
                 writer.writerow(row)
 
 
