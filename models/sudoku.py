@@ -87,27 +87,27 @@ class Sudoku:
     def pinpoint_square(self, i, j):
         x1, y1, x2, y2 = -1, -1, -1, -1
 
-        if 0 <= j <= 2:
+        if 0 <= i <= 2:
             x1 = 0
             x2 = 2
 
-        if 3 <= j <= 5:
+        if 3 <= i <= 5:
             x1 = 3
             x2 = 5
 
-        if 6 <= j <= 8:
+        if 6 <= i <= 8:
             x1 = 6
             x2 = 8
 
-        if 0 <= i <= 2:
+        if 0 <= j <= 2:
             y1 = 0
             y2 = 2
 
-        if 3 <= i <= 5:
+        if 3 <= j <= 5:
             y1 = 3
             y2 = 5
 
-        if 6 <= i <= 8:
+        if 6 <= j <= 8:
             y1 = 6
             y2 = 8
 
@@ -142,8 +142,8 @@ class Sudoku:
             for m in range(y1, y2 + 1):
                 if l == i and m == j:
                     continue
-
                 domain = self.domain_matrix[l][m]
+                print(f"DOMAIN ({l}, {m}): {domain}")
                 if len(domain) == 1 and value in domain:
                     return False
 
@@ -151,3 +151,11 @@ class Sudoku:
 
     def is_consistent(self, value, i, j):
         return self.check_row(value, i, j) and self.check_column(value, i, j) and self.check_square(value, i, j)
+
+    def is_empty_set(self):
+        for i in range(9):
+            for j in range(9):
+                if len(self.domain_matrix[i][j]) == 0:
+                    return True
+        
+        return False

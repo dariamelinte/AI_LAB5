@@ -1,4 +1,5 @@
 import csv
+import copy
 import logging
 
 from models.sudoku import Sudoku
@@ -12,15 +13,27 @@ logging.basicConfig(filename="logs.log",
 def bkt_with_fc_mrv(sudoku: Sudoku):
     if sudoku.is_complete():
         return True
-    
-    print(sudoku.domain_matrix)
 
     i, j = sudoku.get_next_unassigned_variable()
 
     for value in sudoku.domain_matrix[i][j]:
         if sudoku.is_consistent(value=value, i=i, j=j):
-            print(f"value {value} is consistent")
+            print(f"value {value} at ({i}, {j}) is consistent")
 
+            new_sudoku = Sudoku()
+            new_sudoku.domain_matrix = copy.deepcopy(sudoku.domain_matrix)
+            new_sudoku.domain_matrix[i][j] = set([value])
+            new_sudoku.clean_domains()
+
+            if not new_sudoku.is_empty_set():
+                result = bkt_with_fc_mrv(new_sudoku)
+
+                if result:
+                    sudoku.domain_matrix = copy.deepcopy(new_sudoku.domain_matrix)
+                    return result
+        else:
+            print(f"value {value} at ({i}, {j}) is not consistent")
+    return False
 
 def main():
     examples = ["1"]
@@ -49,7 +62,7 @@ def main():
             sudoku.domain_matrix = domain_matrix
             sudoku.clean_domains()
 
-        bkt_with_fc_mrv(sudoku=sudoku)
+        result = bkt_with_fc_mrv(sudoku=sudoku)
         
         with open(f"out/{example}.csv",'w') as sud_out:
             writer = csv.writer(sud_out,lineterminator="\n")
