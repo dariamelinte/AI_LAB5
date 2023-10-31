@@ -36,7 +36,7 @@ def bkt_with_fc_mrv(sudoku: Sudoku):
     return False
 
 def main():
-    examples = ["1"]
+    examples = ["1", "2", "3"]
 
     for example in examples:
         sudoku = Sudoku()
