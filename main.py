@@ -18,7 +18,8 @@ def bkt_with_fc_mrv(sudoku: Sudoku):
     i, j = sudoku.get_next_unassigned_variable()
 
     for value in sudoku.domain_matrix[i][j]:
-        print(value)
+        if sudoku.is_consistent(value=value, i=i, j=j):
+            print(f"value {value} is consistent")
 
 
 def main():
@@ -47,9 +48,8 @@ def main():
             # Instantiate a puzzle to solve
             sudoku.domain_matrix = domain_matrix
             sudoku.clean_domains()
-            print(sudoku.domain_matrix)
 
-        # bkt_with_fc_mrv(sudoku=sudoku)
+        bkt_with_fc_mrv(sudoku=sudoku)
         
         with open(f"out/{example}.csv",'w') as sud_out:
             writer = csv.writer(sud_out,lineterminator="\n")
