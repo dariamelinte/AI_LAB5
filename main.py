@@ -1,14 +1,7 @@
 import csv
 import copy
-import logging
 
 from models.sudoku import Sudoku
-
-logging.basicConfig(filename="logs.log",
-                    filemode='a',
-                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                    datefmt='%H:%M:%S',
-                    level=logging.DEBUG)
 
 def bkt_with_fc_mrv(sudoku: Sudoku):
     if sudoku.is_complete():
